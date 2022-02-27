@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quizapp2/screens/screen2.dart';
 import 'package:quizapp2/widgets/answer_widget.dart';
+import 'package:quizapp2/widgets/drawer.dart';
 import 'package:quizapp2/widgets/question_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -56,13 +58,37 @@ class _HomeScreenState extends State<HomeScreen> {
         {'answerText': 'mainAxisAlignment', 'score': 1},
         {'answerText': 'non of the above', 'score': 0}
       ]
+    },
+    {
+      'question':
+          'Which of the following is used to align children horizontally in a Column?',
+      'answers': [
+        {'answerText': 'crossAxisAlignment', 'score': 1},
+        {'answerText': 'Align', 'score': 0},
+        {'answerText': 'mainAxisAlignment', 'score': 0},
+        {'answerText': 'non of the above', 'score': 0}
+      ]
+    },
+    {
+      'question': 'Can you use both color and decoration in a container?',
+      'answers': [
+        {'answerText': 'Yes', 'score': 0},
+        {'answerText': 'No', 'score': 1},
+      ]
+    },
+    {
+      'question':
+          'Which method is used to navigate to another screen using its name?',
+      'answers': [
+        {'answerText': 'pushNamed', 'score': 0},
+        {'answerText': 'pop', 'score': 0},
+        {'answerText': 'popUntil', 'score': 1},
+        {'answerText': 'push', 'score': 0}
+      ]
     }
   ];
-
   int currentIndex = 0;
-
   int totalScore = 0;
-
   void answerQuestion(int score) {
     setState(() {
       currentIndex += 1;
@@ -71,13 +97,28 @@ class _HomeScreenState extends State<HomeScreen> {
     totalScore += score;
   }
 
+  final _scaffolKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffolKey,
+        drawer: currentIndex == questions.length / 2
+            ? NavigationDrawer(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, Screen2.routename,
+                      arguments: {
+                        'currentIndex': currentIndex,
+                        'questions': questions,
+                        'totalScore': totalScore,
+                      });
+                },
+              )
+            : null,
         appBar: AppBar(
           title: Text("Quiz App"),
         ),
-        body: currentIndex != questions.length
+        body: currentIndex != questions.length / 2
             ? Column(
                 children: [
                   QuestionWidget(text: questions[currentIndex]['question']),
@@ -93,8 +134,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("No more questions"),
-                    Text('Your total score $totalScore')
+                    Text('Your total score $totalScore'),
+                    TextButton(
+                        onPressed: () {
+                          _scaffolKey.currentState!.openDrawer();
+                        },
+                        child: Text("Keep Going!"))
                   ],
                 ),
               ));

@@ -11,8 +11,9 @@ class AnswerWidget extends StatelessWidget {
       onTap: OnTap,
       child: Container(
         margin: EdgeInsets.all(8),
-        color: Colors.blue,
         width: double.infinity,
+        decoration: BoxDecoration(
+            color: Colors.blue, borderRadius: BorderRadius.circular(15)),
         child: Text(
           text,
           textAlign: TextAlign.center,
